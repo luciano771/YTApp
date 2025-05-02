@@ -1,49 +1,37 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-
-const emails = ["pereyraluciano771@gmail.com"];
+import UsersModel from "../models/UsersModel.js";
 
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:5000/Auth/google/callback"
+  callbackURL: `${process.env.BASE_URL}/Auth/google/callback`
 }, async (accessToken, refreshToken, profile, done) => {
-  try {
-    const email = profile?.emails?.[0]?.value;
+  console.log("givenName:", profile?.name?.givenName);   
+  console.log("firstName:", profile?.name?.familyName);
+  console.log("email:", profile?.emails[0]?.value);
+  console.log("_idUser:", profile?.id);
 
-    if (!email) {
-      console.error("No se pudo obtener el email del perfil de Google");
-      return done(null, false, { message: "Email no disponible" });
-    }
+  const UserDataNotification = {
+    _idUser: profile?.id, 
+    givenName: profile?.name?.givenName,      
+    familyName: profile?.name?.familyName,    
+    email: profile?.emails?.[0]?.value       
+  };
+  var exist = await UsersModel.getUser(profile?.id);
+  if(!exist)
+  {
+    UsersModel.create(UserDataNotification);
+  } 
+  console.log(exist);
+  return done(null, {
+    _idUser: profile?.id, 
+    givenName: profile?.name?.givenName,      
+    familyName: profile?.name?.familyName,    
+    email: profile?.emails?.[0]?.value,
+    photo: profile?.photos?.[0]?.value      
+  });
 
-    const isAuthorized = emails.includes(email);
-
-    if (isAuthorized) {
-      return done(null, profile);
-    } else {
-      emails.push(email);
-      return done(null, profile);
-    }
-  } catch (err) {
-    console.error("Error en la estrategia de Google:", err);
-    return done(err, false, { message: "Error interno en autenticación" });
-  }
 }));
 
-passport.serializeUser((user, done) => {
-  try {
-    done(null, user);
-  } catch (err) {
-    console.error("Error en serializeUser:", err);
-    done(err);
-  }
-});
-
-passport.deserializeUser((obj, done) => {
-  try {
-    done(null, obj);
-  } catch (err) {
-    console.error("Error en deserializeUser:", err);
-    done(err);
-  }
-});
+ 

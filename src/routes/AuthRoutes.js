@@ -4,14 +4,21 @@ import passport from "passport";
 const router = Router();
 
 router.get('/google',
-  passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/contacts', 'https://www.google.com/m8/feeds/'], session: false })
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],   
+    session: false
+  })
 );
-
+  
 router.get('/google/callback',
-  (req, res) => {
-    // Login exitoso
-    res.send("Login exitoso con Google");
+  passport.authenticate('google', { session: false }),
+  (req, res) => { 
+    res.json({
+      message: "Autenticación exitosa",
+      user: req.user
+    }); 
   }
 );
 
+ 
 export default router;

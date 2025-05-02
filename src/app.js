@@ -38,23 +38,12 @@ app.use('/openai', openAIRoutes)
 app.use('/Auth',AuthRoutes)
 app.use('/Users',UsersRoutes)
 app.use('/search',YTRoutes)
-
-const interfaces = os.networkInterfaces();
-
-app.listen(process.env.PORT, () => {
-    console.log('Escuchando en el puerto: ' + process.env.PORT);
-    Object.entries(interfaces).forEach(([nombre, infos]) => {
-        infos.forEach((iface) => {
-          if (!iface.internal) {
-            console.log(`🌐 IP ${iface.family} detectada en interfaz ${nombre}: ${iface.address}`);
-          }
-        });
-      });
-    });
  
-    axios.get('https://api.ipify.org?format=json')
-    .then(res => console.log("🌐 IP pública usada por Axios:", res.data.ip));
+app.listen(process.env.PORT, () => {
+    console.log('Escuchando en el puerto: ' + process.env.PORT); 
+    });
   
  
 
 export default app;
+ 
