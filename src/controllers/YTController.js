@@ -13,7 +13,7 @@ class YTController {
             var excludes = req.body.exclude?.split(',') || [];
             var relevanceLanguage = req.body.relevanceLanguage?.split(',') || [];
             var regionCode = req.body.regionCode?.split(',') || [];
-            var publishedBefore = req.body.publishedBefore?.split(',') || [];
+            var publishedAfter = req.body.publishedAfter?.split(',') || [];
             const combinaciones = new Set();
             combinaciones.add(includes.map(w => w.trim()).join(' '));
             includes.forEach(w => combinaciones.add(w.trim()));
@@ -28,7 +28,7 @@ class YTController {
             console.log("🧠 q:", q);
             console.log("🌐 URL encoded:", searchTerm);
 
-            const url = `https://www.googleapis.com/youtube/v3/search?key=${process.env.YT_KEY}&part=snippet&type=video&q=${searchTerm}&maxResults=50&relevanceLanguage=${relevanceLanguage}&regionCode=${regionCode}&publishedBefore=${publishedBefore}`; 
+            const url = `https://www.googleapis.com/youtube/v3/search?key=${process.env.YT_KEY}&part=snippet&type=video&q=${searchTerm}&maxResults=50&relevanceLanguage=${relevanceLanguage}&regionCode=${regionCode}&publishedAfter=${publishedAfter}`; 
             console.log(url);
             const response = await axios.get(url);
             const items = response.data.items; 

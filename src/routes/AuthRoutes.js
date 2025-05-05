@@ -20,5 +20,5 @@ router.get('/google/callback',
   }
 );
 
- 
+
 export default router;
