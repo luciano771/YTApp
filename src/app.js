@@ -23,9 +23,27 @@ app.use(cookieParser());
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, 'src','public'))); 
 
-app.use(cors(
-    {origin: ['https://ytapp-client.onrender.com']}
-));
+const allowedOrigins = ['https://ytapp-client.onrender.com'];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin; 
+  if (!origin || !allowedOrigins.includes(origin)) {
+    return res.status(403).send('Forbidden: Origin not allowed');
+  } 
+  next();
+});
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(passport.initialize());
