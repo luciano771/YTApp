@@ -11,10 +11,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import passport from 'passport'; 
 import './middlewares/passport-config.js';  
- 
-import os from 'os'; 
-import axios from 'axios'; 
-
+   
 dbClient.conectarBD();
 
 const app = express();
@@ -23,7 +20,7 @@ app.use(cookieParser());
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, 'src','public'))); 
 
-const allowedOrigins = ['https://ytapp-client.onrender.com'];
+const allowedOrigins = [process.env.ORIGIN_ALLOWED];
 
 app.use((req, res, next) => {
   const origin = req.headers.origin; 
