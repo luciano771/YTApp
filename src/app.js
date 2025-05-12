@@ -23,7 +23,9 @@ app.use(cookieParser());
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, 'src','public'))); 
 
-app.use(cors());
+app.use(cors(
+    {origin: ['https://ytapp-client.onrender.com']}
+));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(passport.initialize());
